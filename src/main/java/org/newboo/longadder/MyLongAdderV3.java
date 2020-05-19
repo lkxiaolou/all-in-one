@@ -1,32 +1,30 @@
 package org.newboo.longadder;
 
+import sun.misc.Contended;
+
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MyLongAdderV3 {
 
-    private static ThreadLocal<Integer> local = ThreadLocal.withInitial(
-            () -> 0);
+    private static class AtomicLongWrap {
+        @Contended
+        private final AtomicLong value = new AtomicLong();
+    }
 
     private final int coreSize;
-    private final AtomicLong[] counts;
+    private final AtomicLongWrap[] counts;
 
     public MyLongAdderV3(int coreSize) {
         this.coreSize = coreSize;
-        this.counts = new AtomicLong[coreSize];
+        this.counts = new AtomicLongWrap[coreSize];
         for (int i = 0; i < coreSize; i++) {
-            this.counts[i] = new AtomicLong();
+            this.counts[i] = new AtomicLongWrap();
         }
     }
 
     public void increment() {
-        int index = 0;
-        long r = counts[index].get();
-
-        while (!counts[index].compareAndSet(r, r + 1)) {
-            local.set(local.get() + 1);
-            index = local.get() & (coreSize -1);
-            r = counts[index].get();
-        }
+        int index = Thread.currentThread().hashCode() & (coreSize - 1);
+        counts[index].value.incrementAndGet();
     }
 
 }

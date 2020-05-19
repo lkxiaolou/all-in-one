@@ -1,12 +1,13 @@
 package org.newboo.longadder;
 
+import sun.misc.Contended;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicLongArray;
 
-public class MyLongAdderV22 {
+public class MyLongAdderV211 {
 
     private static sun.misc.Unsafe UNSAFE = null;
     private static final long PROBE;
@@ -43,39 +44,34 @@ public class MyLongAdderV22 {
 
     private final int coreSize;
 
-    private final AtomicLong[] counts;
+    private static final int length = 15;
+    private static final int offset = 7;
 
+    private final AtomicLongArray[] counts;
 
-    public MyLongAdderV22(int coreSize) {
+    public MyLongAdderV211(int coreSize) {
         this.coreSize = coreSize;
-
-        this.counts = new AtomicLong[coreSize];
-
+        this.counts = new AtomicLongArray[coreSize];
         for (int i = 0; i < coreSize; i++) {
-            this.counts[i] = new AtomicLong();
+            this.counts[i] = new AtomicLongArray(length);
         }
     }
 
     public void increment() {
 
-        // 获取Thread的随机数
         int h = getProbe();
 
         int index = getProbe() & (coreSize - 1);
         long r;
-        if (!counts[index].compareAndSet(r = counts[index].get(), r + 1)) {
+        if (!counts[index].compareAndSet(offset, r = counts[index].get(offset), r + 1)) {
             if (h == 0) {
-                // 为0时强制初始化
                 ThreadLocalRandom.current();
                 h = getProbe();
             }
-            // 重新计算随机数
             advanceProbe(h);
-            // 重试一次
-            //if (!counts[index].compareAndSet(r = counts[index].get(), r + 1)) {
-                // 用incrementAndGet保底
-                counts[index].incrementAndGet();
-            //}
+            if (!counts[index].compareAndSet(offset, r = counts[index].get(offset), r + 1)) {
+                counts[index].incrementAndGet(offset);
+            }
         }
     }
 

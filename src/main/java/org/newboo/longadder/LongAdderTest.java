@@ -20,10 +20,16 @@ public class LongAdderTest {
     private MyLongAdderV1 myLongAdderV1;
     private MyLongAdderV2 myLongAdderV2;
     private MyLongAdderV3 myLongAdderV3;
+    private MyLongAdderV4 myLongAdderV4;
+    private MyLongAdderV5 myLongAdderV5;
+    private MyLongAdderV24 myLongAdderV24;
+    private MyLongAdderV31 myLongAdderV31;
     private MyLongAdderV20 myLongAdderV20;
     private MyLongAdderV21 myLongAdderV21;
+    private MyLongAdderV211 myLongAdderV211;
     private MyLongAdderV22 myLongAdderV22;
     private MyLongAdderV23 myLongAdderV23;
+    private MyLongAdderV30 myLongAdderV30;
 
     @Setup
     public void init() {
@@ -31,10 +37,16 @@ public class LongAdderTest {
         myLongAdderV1 = new MyLongAdderV1(coreSize);
         myLongAdderV2 = new MyLongAdderV2(coreSize);
         myLongAdderV3 = new MyLongAdderV3(coreSize);
+        myLongAdderV4 = new MyLongAdderV4(coreSize);
+        myLongAdderV5 = new MyLongAdderV5(coreSize);
+        myLongAdderV24 = new MyLongAdderV24(coreSize);
+        myLongAdderV31 = new MyLongAdderV31(coreSize);
         myLongAdderV20 = new MyLongAdderV20(coreSize);
         myLongAdderV21 = new MyLongAdderV21(coreSize);
+        myLongAdderV211 = new MyLongAdderV211(coreSize);
         myLongAdderV22 = new MyLongAdderV22(coreSize);
         myLongAdderV23 = new MyLongAdderV23(coreSize);
+        myLongAdderV30 = new MyLongAdderV30(coreSize);
     }
 
     private static final int coreSize = 4;
@@ -47,7 +59,8 @@ public class LongAdderTest {
         Options opt = new OptionsBuilder()
                 .include(LongAdderTest.class.getSimpleName())
                 .forks(1)
-                .threads(coreSize)
+                .threads(4)
+                .jvmArgs("-XX:-RestrictContended")
                 .warmupIterations(2)
                 .measurementIterations(2)
                 .mode(Mode.Throughput)
@@ -83,8 +96,28 @@ public class LongAdderTest {
     }
 
     @Benchmark
+    public void testMyLongAdderV2() {
+        myLongAdderV2.increment();
+    }
+
+    @Benchmark
+    public void testMyLongAdderV31() {
+        myLongAdderV31.increment();
+    }
+
+    @Benchmark
     public void testMyLongAdderV3() {
         myLongAdderV3.increment();
+    }
+
+    @Benchmark
+    public void testMyLongAdderV4() {
+        myLongAdderV4.increment();
+    }
+
+    @Benchmark
+    public void testMyLongAdderV5() {
+        myLongAdderV5.increment();
     }
 
     @Benchmark
@@ -93,8 +126,8 @@ public class LongAdderTest {
     }
 
     @Benchmark
-    public void testMyLongAdderV2() {
-        myLongAdderV2.increment();
+    public void testMyLongAdderV24() {
+        myLongAdderV24.increment();
     }
 
     @Benchmark
@@ -105,6 +138,16 @@ public class LongAdderTest {
     @Benchmark
     public void testMyLongAdderV22() {
         myLongAdderV22.increment();
+    }
+
+    @Benchmark
+    public void testMyLongAdderV211() {
+        myLongAdderV211.increment();
+    }
+
+    @Benchmark
+    public void testMyLongAdderV30() {
+        myLongAdderV30.increment();
     }
 
     @Benchmark
