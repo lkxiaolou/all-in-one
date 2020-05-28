@@ -2,6 +2,7 @@ package org.newboo.guava;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+import com.google.common.util.concurrent.RateLimiter;
 
 public class GuavaDemo {
 
@@ -34,6 +35,10 @@ public class GuavaDemo {
         // 字符串处理
         System.out.println(Strings.emptyToNull(""));
         System.out.println(Strings.emptyToNull("lk"));
+
+        RateLimiter rateLimiter = RateLimiter.create(5);
+        // 阻塞
+        rateLimiter.acquire();
 
     }
 
