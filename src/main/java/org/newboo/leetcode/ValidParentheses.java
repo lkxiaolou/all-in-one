@@ -4,6 +4,8 @@ import java.util.Stack;
 
 /**
  * https://leetcode-cn.com/problems/valid-parentheses/
+ * 执行用时 : 2 ms, 在所有 Java 提交中击败了83.81%的用户
+ * 内存消耗 :37.5 MB, 在所有 Java 提交中击败了5.48%的用户
  */
 public class ValidParentheses {
 

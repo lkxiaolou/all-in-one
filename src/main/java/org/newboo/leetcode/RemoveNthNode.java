@@ -1,7 +1,5 @@
 package org.newboo.leetcode;
 
-import java.util.List;
-
 /**
  * https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/
  */
