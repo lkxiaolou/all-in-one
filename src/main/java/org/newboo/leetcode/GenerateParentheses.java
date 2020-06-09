@@ -1,16 +1,18 @@
 package org.newboo.leetcode;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+/**
+ * https://leetcode-cn.com/problems/generate-parentheses/submissions/
+ * 执行用时 :1 ms, 在所有 Java 提交中击败了97.48%的用户
+ * 内存消耗 :39.6 MB, 在所有 Java 提交中击败了5.26%的用户
+ */
 public class GenerateParentheses {
 
     public static void main(String[] args) {
         System.out.println(generateParenthesis(3));
         // ["(((())))","((()()))","((())())","((()))()","(()(()))","(()()())","(()())()",/*"(())(())"*/,"(())()()","()((()))","()(()())","()(())()","()()(())","()()()()"]
-        // [()()()(), (()())(), (()(())), ()()(()), (())()(), (((()))), ()((())), ()(())(), ()(()()), (()()()), ((()())), ((()))(), ((())())]
         System.out.println(generateParenthesis(4));
     }
 
@@ -19,27 +21,29 @@ public class GenerateParentheses {
      *                                         f(i)不合法
      */
     public static List<String> generateParenthesis(int n) {
-        Set<String> set = null;
-        for (int i = 1; i <= n; i++) {
-            set = generate0(i, set);
-        }
-        return new ArrayList<>(set);
+        List<String> res = new ArrayList<>();
+        generate0(n, n, "", res);
+        return res;
     }
 
-    public static Set<String> generate0(int n, Set<String> ls) {
-        if (n == 1) {
-            Set<String> l = new HashSet<>(1);
-            l.add("()");
-            return l;
-        } else {
-            Set<String> l1 = new HashSet<>(ls.size() * 3 - 1);
-            for (String s : ls) {
-                l1.add("()" + s);
-                l1.add(s + "()");
-                l1.add("(" + s + ")");
-            }
+    /**
+     * 深度遍历
+     *             (
+     *        (         )
+     *     (     )   (    )
+     *  (    )
+     */
 
-            return l1;
+    public static void generate0(int left, int right, String cur, List<String> res) {
+        if (left == 0 && right == 0) {
+            res.add(cur);
+            return;
+        }
+        if (left > 0) {
+            generate0(left - 1, right, cur + "(", res);
+        }
+        if (right > left) {
+            generate0(left, right - 1, cur + ")", res);
         }
     }
 
